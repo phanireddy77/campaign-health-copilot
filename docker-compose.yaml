@@ -1,0 +1,19 @@
+services:
+  postgres:
+    image: postgres:17
+    container_name: campaign-health-postgres
+    restart: unless-stopped
+
+    environment:
+      POSTGRES_DB: campaign_health
+      POSTGRES_USER: campaign_user
+      POSTGRES_PASSWORD: campaign_password
+
+    ports:
+      - "5432:5432"
+
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:

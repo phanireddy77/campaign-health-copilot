@@ -1,0 +1,34 @@
+import express from "express";
+import cors from "cors";
+import db  from "./db/knex";
+
+const app = express();
+
+app.use(cors());
+app.use(express.json());
+
+app.get("/api/health", async (_req, res) => {
+  try {
+    await db.raw("SELECT 1");
+    const dt = new Date();
+    dt.setMilliseconds(0); // Remove milliseconds for consistency
+
+    res.json({
+      status: "healthy",
+      service: "campaign-health-api",
+      database: "connected",
+      timestamp: dt.toISOString().replace(".000Z", "Z")
+    });
+  } catch (error) {
+    console.error("Health check failed:", error);
+
+    res.status(503).json({
+      status: "unhealthy",
+      service: "campaign-health-api",
+      database: "disconnected",
+      timestamp: new Date().toISOString(),
+    });
+  }
+});
+
+export default app;
