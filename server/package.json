@@ -7,7 +7,12 @@
     "dev": "tsx watch server.ts",
     "start": "node dist/server.js",
     "build": "tsc",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "db:migrate": "knex --knexfile knexfile.cjs migrate:latest",
+    "db:rollback": "knex --knexfile knexfile.cjs migrate:rollback",
+    "db:rollback:all": "knex --knexfile knexfile.cjs migrate:rollback --all",
+    "db:seed": "knex --knexfile knexfile.cjs seed:run",
+    "db:reset": "npm run db:rollback:all && npm run db:migrate && npm run db:seed"
   },
   "keywords": [],
   "author": "",
