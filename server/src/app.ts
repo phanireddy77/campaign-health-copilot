@@ -1,7 +1,7 @@
 import express from "express";
 import cors from "cors";
 import db  from "./db/knex";
-
+import advertiserRoutes from "./routes/advertiserRouter";
 const app = express();
 
 app.use(cors());
@@ -30,5 +30,7 @@ app.get("/api/health", async (_req, res) => {
     });
   }
 });
+
+app.use("/api/advertisers", advertiserRoutes);
 
 export default app;
