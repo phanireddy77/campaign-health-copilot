@@ -1,9 +1,10 @@
+
 export interface Advertiser {
-  id: number;
-  name: string;
-  industry: string | null;
-  created_at: Date; // ISO 8601 format
-  updated_at: Date; // ISO 8601 format
+    id: number,
+    name: string,
+    industry: string | null,
+    created_at: Date; // ISO 8601 format
+    updated_at: Date; // ISO 8601 format
 }
 
 export interface Campaign {
