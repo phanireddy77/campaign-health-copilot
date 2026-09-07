@@ -2,11 +2,24 @@ import { useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../app/hooks";
 import { fetchLineById } from "../features/lines/lineSlice";
+import { fetchLineMetrics } from "../features/lines/metricsSlice";
+import PerformanceSummary
+  from "../components/PerformanceSummary";
+import DailyMetricsTable
+  from "../components/DailyMetricsTable";
 
 function LineDetailsPage (){
 
     const { lineId } = useParams();
     const line = useAppSelector((state)=> state.lines.selected);
+    const {
+        summary,
+        daily,
+        loading,
+        error,
+    } = useAppSelector(
+        (state) => state.metrics
+    );
     const dispatch = useAppDispatch();
 
     useEffect(()=>{
@@ -14,7 +27,27 @@ function LineDetailsPage (){
         dispatch(
             fetchLineById(id)
         );
+        dispatch(fetchLineMetrics(id));
+
     },[lineId, dispatch]);
+
+    if (loading) {
+        return (
+        <p>
+            Loading performance...
+        </p>
+        );
+    }
+
+    if (error) {
+        return (
+        <p>
+            Failed to load metrics:
+            {" "}
+            {error}
+        </p>
+        );
+    }
 
     if(!line) {
         return <p>Line is loading...</p>
@@ -53,9 +86,10 @@ function LineDetailsPage (){
                 {line.end_date}
             </p>
             <h3>Performance</h3>
-            <p>
-                Metrics dashboard arrives on Day 5.
-            </p>
+            {summary && (
+                <PerformanceSummary summary={summary} />
+            )}
+            <DailyMetricsTable metrics={daily} />
         </section>
     )
 }

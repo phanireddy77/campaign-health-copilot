@@ -3,13 +3,14 @@ import { configureStore } from "@reduxjs/toolkit";
 import advertiserReducer from "../features/advertisers/advertiserSlice";
 import campaignReducer from "../features/campaigns/campaignSlice";
 import lineReducer from "../features/lines/lineSlice";
-
+import metricsReducer from "../features/lines/metricsSlice";
 
 export const store = configureStore({
     reducer: {
         advertisers: advertiserReducer,
         campaigns: campaignReducer,
-        lines: lineReducer
+        lines: lineReducer,
+        metrics: metricsReducer
     }
 });
 

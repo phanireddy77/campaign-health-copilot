@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { getLineById, getMetricsByLineId } from "../servies/lineService";
+import { getLineById, getLineMetrics } from "../servies/lineService";
 
 export async function getLine(req: Request, res: Response) {
     const id = Number(req.params.lineId);
@@ -34,7 +34,7 @@ export async function getMetricsByLine(req: Request, res: Response) {
             message: 'Invalid line id'
         });
     }
-    const response = await getMetricsByLineId(id);
+    const response = await getLineMetrics(id);
 
     if (!response) {
         return res.status(404).json({

@@ -32,11 +32,29 @@ export interface Line {
 export interface LineMetric {
     id: number;
     line_id: number;
-    metric_date: Date; // ISO 8601 format
+    metric_date: string; // ISO 8601 format
     impressions: number;
     clicks: number;
     conversions: number;
     spend: string;
     revenue: string;
     created_at: Date; // ISO 8601 format
+}
+
+export interface LinePerformanceSummary {
+    asOfDate: string | null;
+    impressions: number;
+    clicks: number;
+    conversions: number;
+    spend: number;
+    revenue: number;
+    ctr: number | null;
+    cpc: number | null;
+    cpa: number | null;
+    roas: number | null;
+    budget: number;
+    budgetUtilization: number;
+    expectedSpend: number;
+    pacingRatio: number | null;
+    elapsedFlightPercentage: number;
 }
