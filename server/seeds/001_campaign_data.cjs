@@ -203,7 +203,7 @@ exports.seed = async function (knex) {
           name: `${campaign.name} - ${template.suffix}`,
           status: "ACTIVE",
 
-          budget: 30000,
+          budget: 60000,
           daily_budget: 1000,
 
           goal_type: template.goal_type,

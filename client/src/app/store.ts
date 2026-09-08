@@ -4,13 +4,15 @@ import advertiserReducer from "../features/advertisers/advertiserSlice";
 import campaignReducer from "../features/campaigns/campaignSlice";
 import lineReducer from "../features/lines/lineSlice";
 import metricsReducer from "../features/lines/metricsSlice";
+import healthReducer from "../features/lines/healthSlice";
 
 export const store = configureStore({
     reducer: {
         advertisers: advertiserReducer,
         campaigns: campaignReducer,
         lines: lineReducer,
-        metrics: metricsReducer
+        metrics: metricsReducer,
+        lineHealth: healthReducer
     }
 });
 

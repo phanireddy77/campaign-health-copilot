@@ -12,7 +12,7 @@ function HealthCheck() {
  const  [error, setError] = useState<string | null>(null);
 
  useEffect(()=> {
-  await fetch('http://localhost:3001/api/health')
+  fetch('http://localhost:3001/api/health')
   .then((res) => {
     if (!res.ok) {
       throw new Error(`Campaign Health API returned status ${res.status}`);

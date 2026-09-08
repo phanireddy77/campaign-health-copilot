@@ -3,10 +3,12 @@ import { useParams } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../app/hooks";
 import { fetchLineById } from "../features/lines/lineSlice";
 import { fetchLineMetrics } from "../features/lines/metricsSlice";
+import { fetchLineHealth } from "../features/lines/healthSlice";
 import PerformanceSummary
   from "../components/PerformanceSummary";
 import DailyMetricsTable
   from "../components/DailyMetricsTable";
+import LineHealthIssues from "../components/LineHealthIssues";
 
 function LineDetailsPage (){
 
@@ -20,6 +22,7 @@ function LineDetailsPage (){
     } = useAppSelector(
         (state) => state.metrics
     );
+    const lineHealthResult = useAppSelector((state) => state.lineHealth.result);
     const dispatch = useAppDispatch();
 
     useEffect(()=>{
@@ -28,7 +31,7 @@ function LineDetailsPage (){
             fetchLineById(id)
         );
         dispatch(fetchLineMetrics(id));
-
+        dispatch(fetchLineHealth(id));
     },[lineId, dispatch]);
 
     if (loading) {
@@ -89,6 +92,11 @@ function LineDetailsPage (){
             {summary && (
                 <PerformanceSummary summary={summary} />
             )}
+            <h3>Line Health</h3>
+            {lineHealthResult && (
+                <LineHealthIssues issues={lineHealthResult.issues} />
+            )}
+            <h3>Daily Performance</h3>
             <DailyMetricsTable metrics={daily} />
         </section>
     )

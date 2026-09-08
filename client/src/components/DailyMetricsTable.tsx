@@ -16,10 +16,6 @@ function DailyMetricsTable({
 }: DailyMetricsTableProps) {
   return (
     <section>
-      <h3>
-        Daily Performance
-      </h3>
-
       <div className="table-container">
         <table>
           <thead>

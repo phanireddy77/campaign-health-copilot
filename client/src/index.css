@@ -136,3 +136,6 @@ th {
 tbody tr:last-child td {
   border-bottom: 0;
 }
+.health-issue {
+  padding: 5px;
+}

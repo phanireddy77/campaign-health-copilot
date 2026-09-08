@@ -20,8 +20,6 @@ function PerformanceSummary({
 }: PerformanceSummaryProps) {
   return (
     <section>
-      <h3>Performance</h3>
-
       <p>
         Reporting through:
         {" "}
