@@ -26,7 +26,10 @@ function LineHealthIssues({ issues }: HealthIssueProps) {
                             <strong>{issue.code}</strong>
                             <span style={{marginLeft:'10px'}}>{issue.severity}</span>
                             <p>{issue.message}</p>
-                            <p>Actual Value: {issue.actual}. Threshold is {issue.threshold}</p>
+                            {issue.actual && (
+                                <p>Actual Value: {issue.actual.toFixed(2)}. Threshold is {issue.threshold}</p>
+                            )}
+                            <p>Health penalty: {" "} - {issue.penalty} </p>
                         </article>
                     )
                 )

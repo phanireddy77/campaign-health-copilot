@@ -9,6 +9,7 @@ import PerformanceSummary
 import DailyMetricsTable
   from "../components/DailyMetricsTable";
 import LineHealthIssues from "../components/LineHealthIssues";
+import LineHealthSummary from "../components/LineHealthSummary";
 
 function LineDetailsPage (){
 
@@ -88,13 +89,16 @@ function LineDetailsPage (){
                 {" → "}
                 {line.end_date}
             </p>
+            <h3>Line Health</h3>
+            {lineHealthResult && (
+                <LineHealthSummary health={lineHealthResult} />
+            )}
+            {lineHealthResult && (
+                <LineHealthIssues issues={lineHealthResult.issues} />
+            )}
             <h3>Performance</h3>
             {summary && (
                 <PerformanceSummary summary={summary} />
-            )}
-            <h3>Line Health</h3>
-            {lineHealthResult && (
-                <LineHealthIssues issues={lineHealthResult.issues} />
             )}
             <h3>Daily Performance</h3>
             <DailyMetricsTable metrics={daily} />

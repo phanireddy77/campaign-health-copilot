@@ -1,6 +1,7 @@
 import type { Line, LineMetric, LinePerformanceSummary } from "../types/domain";
-import type { HealthIssueCode, HealthIssueSeverity, HealthIssue, LineHealthResult } from "../types/health";
-import { HEALTH_THRESHOLDS } from "../config/healthThresholds";
+import type { HealthIssueCode, HealthIssueSeverity, HealthIssue, HealthStatus, LineHealthResult } from "../types/health";
+import { HEALTH_THRESHOLDS, HEALTH_PENALTIES, HEALTH_SCORE_THRESHOLDS } from "../config/healthThresholds";
+
 
 export function evaluateLineHealth ( line: Line, performance: LinePerformanceSummary): LineHealthResult {
     const issues: HealthIssue[] = [];
@@ -10,10 +11,15 @@ export function evaluateLineHealth ( line: Line, performance: LinePerformanceSum
     evaluateConversions(performance, issues);
     evaluateCpa(line, performance, issues);
 
+    const score = calculateHealthScore(issues);
+    const status = determineHealthStatus(issues, score);
+
     return {
         id: line.id,
         asOfDate: performance.asOfDate,
-        issues
+        issues,
+        score,
+        status
     };
 }
 
@@ -29,7 +35,8 @@ function evaluatePacing ( performance: LinePerformanceSummary, issues: HealthIss
             severity: "WARNING",
             message: "Line spend is below the expected pacing level.",
             actual: pacingRatio,
-            threshold: HEALTH_THRESHOLDS.underPacingRatio
+            threshold: HEALTH_THRESHOLDS.underPacingRatio,
+            penalty: HEALTH_PENALTIES.UNDER_PACING
         });
         return;
     }
@@ -39,7 +46,8 @@ function evaluatePacing ( performance: LinePerformanceSummary, issues: HealthIss
             severity: "WARNING",
             message: "Line spend is above the expected pacing level.",
             actual: pacingRatio,
-            threshold: HEALTH_THRESHOLDS.overPacingRatio
+            threshold: HEALTH_THRESHOLDS.overPacingRatio,
+            penalty: HEALTH_PENALTIES.OVER_PACING
         });
     }
 }
@@ -56,7 +64,8 @@ function evaluateCtr (performance: LinePerformanceSummary, issues: HealthIssue[]
             severity: "WARNING",
             message: "CTR is below the minimum expected threshold.",
             actual: ctr,
-            threshold: HEALTH_THRESHOLDS.minimumCtr
+            threshold: HEALTH_THRESHOLDS.minimumCtr,
+            penalty: HEALTH_PENALTIES.LOW_CTR
         });
         return;
     }
@@ -73,7 +82,8 @@ function evaluateConversions (performance: LinePerformanceSummary, issues: Healt
             severity: "CRITICAL",
             message: "The line has significant spend but no conversions.",
             actual: conversions,
-            threshold: 1
+            threshold: 1,
+            penalty: HEALTH_PENALTIES.NO_CONVERSIONS
         });
         return;
     }
@@ -101,8 +111,30 @@ function evaluateCpa( line: Line, performance: LinePerformanceSummary, issues: H
             severity: "WARNING",
             message: "CPA is materially above the line target.",
             actual: cpa,
-            threshold: cutoff
+            threshold: cutoff,
+            penalty: HEALTH_PENALTIES.HIGH_CPA
         });
     }
     return;
+}
+
+function calculateHealthScore(issues: HealthIssue[]) {
+    const totalScore = issues.reduce((total, issue) => total + issue.penalty, 0);
+
+    return Math.max(0, 100 - totalScore);
+}
+
+function determineHealthStatus(issues: HealthIssue[], score: number) {
+    const hasCriticalIssue = issues.some((issue) => issue.severity === 'CRITICAL');
+
+    if (hasCriticalIssue) {
+        return "CRITICAL";
+    }
+    if (score >= 90) {
+        return "HEALTHY";
+    } else if(score < 90 && score >= 60) {
+        return "WARNING";
+    }
+
+    return "CRITICAL";
 }

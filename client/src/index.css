@@ -136,6 +136,49 @@ th {
 tbody tr:last-child td {
   border-bottom: 0;
 }
+
+.health-summary {
+  display: grid;
+  grid-template-columns:
+    repeat(auto-fit, minmax(160px, 1fr));
+  gap: 16px;
+  margin: 16px 0 28px;
+}
+
+.health-summary > div {
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 18px;
+}
+
+.health-score {
+  display: block;
+  font-size: 32px;
+  margin-top: 8px;
+}
+
+.health-score small {
+  font-size: 16px;
+  font-weight: normal;
+}
+
+.health-issues {
+  display: grid;
+  gap: 12px;
+  margin-bottom: 32px;
+}
+
+.health-issue {
+  margin: 0;
+}
+
+.health-issue-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+}
+
 .health-issue {
   padding: 5px;
 }
