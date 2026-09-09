@@ -1,6 +1,6 @@
 import type { Line, LineMetric, LinePerformanceSummary } from "../types/domain";
-import type { HealthIssueCode, HealthIssueSeverity, HealthIssue, HealthStatus, LineHealthResult } from "../types/health";
-import { HEALTH_THRESHOLDS, HEALTH_PENALTIES, HEALTH_SCORE_THRESHOLDS } from "../config/healthThresholds";
+import type { HealthIssueCode, HealthIssueSeverity, HealthIssue, HealthStatus, LineHealthResult } from "../types/lineHealth";
+import { HEALTH_THRESHOLDS, HEALTH_PENALTIES } from "../config/lineHealthThresholds";
 
 
 export function evaluateLineHealth ( line: Line, performance: LinePerformanceSummary): LineHealthResult {

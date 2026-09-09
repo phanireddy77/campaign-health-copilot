@@ -18,6 +18,12 @@ import {
   fetchLinesByCampaign,
 } from "../features/lines/lineSlice";
 
+import { fetchCampaignHealth  } from "../features/campaigns/campaignHealthSlice";
+
+import CampaignHealthSummary from "../components/CampaignHealthSummary";
+
+import CampaignLineHealthTable from "../components/CampaignLineHealthTable";
+
 function CampaignDetailsPage() {
   const { campaignId } = useParams();
 
@@ -36,6 +42,11 @@ function CampaignDetailsPage() {
   } = useAppSelector(
     (state) => state.lines
   );
+  const {
+    result: campaignHealth,
+    loading: healthLoading,
+    error: healthError
+  } = useAppSelector( (state) => state.campaignHealth);
 
   useEffect(() => {
     const id = Number(campaignId);
@@ -43,6 +54,7 @@ function CampaignDetailsPage() {
     if (Number.isInteger(id)) {
       dispatch(fetchCampaignById(id));
       dispatch(fetchLinesByCampaign(id));
+      dispatch(fetchCampaignHealth(id));
     }
   }, [campaignId, dispatch]);
 
@@ -81,6 +93,27 @@ function CampaignDetailsPage() {
         {campaign.end_date}
       </p>
 
+      <h3> Campaign Health </h3>
+        {healthLoading && (
+          <p>
+            Evaluating campaign health...
+          </p>
+        )}
+
+        {healthError && (
+          <p>
+            Campaign health unavailable:
+            {" "}
+            {healthError}
+          </p>
+        )}
+
+      {campaignHealth && (
+        <>
+          <CampaignHealthSummary health={campaignHealth} />
+          <CampaignLineHealthTable lines={campaignHealth.lines} />
+        </>
+      )}
       <h3>Lines</h3>
 
       {lines.map((line) => (

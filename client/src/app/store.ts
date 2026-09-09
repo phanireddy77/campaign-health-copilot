@@ -4,7 +4,8 @@ import advertiserReducer from "../features/advertisers/advertiserSlice";
 import campaignReducer from "../features/campaigns/campaignSlice";
 import lineReducer from "../features/lines/lineSlice";
 import metricsReducer from "../features/lines/metricsSlice";
-import healthReducer from "../features/lines/healthSlice";
+import healthReducer from "../features/lines/lineHealthSlice";
+import campaignHealthReducer from "../features/campaigns/campaignHealthSlice";
 
 export const store = configureStore({
     reducer: {
@@ -12,7 +13,8 @@ export const store = configureStore({
         campaigns: campaignReducer,
         lines: lineReducer,
         metrics: metricsReducer,
-        lineHealth: healthReducer
+        lineHealth: healthReducer,
+        campaignHealth: campaignHealthReducer
     }
 });
 

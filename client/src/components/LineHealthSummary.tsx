@@ -1,4 +1,4 @@
-import type { LineHealthResult } from "../types/health";
+import type { LineHealthResult } from "../types/lineHealth";
 
 interface HealthSummaryProps {
     health: LineHealthResult;

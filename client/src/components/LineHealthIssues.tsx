@@ -1,4 +1,4 @@
-import type { HealthIssue } from "../types/health";
+import type { HealthIssue } from "../types/lineHealth";
 
 interface HealthIssueProps {
     issues: HealthIssue[];

@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { apiGet } from "../../api/apiClient";
 import type { Line, LinePerformanceSummary } from "../../types/domain";
-import type { LineHealthResult } from "../../types/health";
+import type { LineHealthResult } from "../../types/lineHealth";
 
 interface LineHealthResponse {
     line: Line;

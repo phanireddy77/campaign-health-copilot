@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../app/hooks";
 import { fetchLineById } from "../features/lines/lineSlice";
 import { fetchLineMetrics } from "../features/lines/metricsSlice";
-import { fetchLineHealth } from "../features/lines/healthSlice";
+import { fetchLineHealth } from "../features/lines/lineHealthSlice";
 import PerformanceSummary
   from "../components/PerformanceSummary";
 import DailyMetricsTable

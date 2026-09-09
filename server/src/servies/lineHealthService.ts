@@ -1,6 +1,6 @@
 import { findLineById, findMetricsByLineId } from "../repositories/lineRepository";
 import { calculateLinePerformance } from "./lineMetricService";
-import { evaluateLineHealth } from "./healthEngine";
+import { evaluateLineHealth } from "./lineHealthEngine";
 
 export async function getLineHealth(lineId: number) {
     const line = await findLineById(lineId);
