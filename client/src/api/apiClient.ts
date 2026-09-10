@@ -18,5 +18,24 @@ export async function apiGet<T>(path: string): Promise<T> {
     const body = (await response.json() as APIResponse<T>);
 
     return body.data;
+}
 
+export async function apiPost<T>(path: string, payload?: unknown): Promise<T> {
+    if (!path) {
+        throw new Error("Invalid End point path");
+    }
+
+    const response = await fetch(`${APP_BASE_URL}${path}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: payload ? JSON.stringify(payload) : undefined
+    });
+
+    if (!response.ok) {
+        throw new Error(`API request failed. ${response.status}`);
+    }
+
+    const body = (await response.json() as APIResponse<T>);
+
+    return body.data;
 }

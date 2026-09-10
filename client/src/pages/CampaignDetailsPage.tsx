@@ -23,6 +23,13 @@ import { fetchCampaignHealth  } from "../features/campaigns/campaignHealthSlice"
 import CampaignHealthSummary from "../components/CampaignHealthSummary";
 
 import CampaignLineHealthTable from "../components/CampaignLineHealthTable";
+import {
+  analyzeCampaign,
+  clearAnalysis,
+} from "../features/campaigns/campaignAnalysis";
+
+import CampaignCopilot
+  from "../components/CampaignCopilot";
 
 function CampaignDetailsPage() {
   const { campaignId } = useParams();
@@ -48,6 +55,15 @@ function CampaignDetailsPage() {
     error: healthError
   } = useAppSelector( (state) => state.campaignHealth);
 
+  const {
+    result: analysis,
+    loading: analysisLoading,
+    error: analysisError,
+  } = useAppSelector(
+        (state) =>
+          state.campaignAnalysis
+      );
+
   useEffect(() => {
     const id = Number(campaignId);
 
@@ -55,6 +71,7 @@ function CampaignDetailsPage() {
       dispatch(fetchCampaignById(id));
       dispatch(fetchLinesByCampaign(id));
       dispatch(fetchCampaignHealth(id));
+      dispatch(clearAnalysis());
     }
   }, [campaignId, dispatch]);
 
@@ -113,6 +130,43 @@ function CampaignDetailsPage() {
           <CampaignHealthSummary health={campaignHealth} />
           <CampaignLineHealthTable lines={campaignHealth.lines} />
         </>
+      )}
+      <div className="copilot-actions">
+        <button
+          type="button"
+          disabled={
+            analysisLoading
+          }
+          onClick={() => {
+            const id =
+              Number(campaignId);
+
+            if (
+              Number.isInteger(id)
+            ) {
+              dispatch(
+                analyzeCampaign(id)
+              );
+            }
+          }}
+        >
+          {analysisLoading
+            ? "Analyzing..."
+            : "Analyze with AI"}
+        </button>
+      </div>
+      {analysisError && (
+        <p>
+          AI analysis unavailable:
+          {" "}
+          {analysisError}
+        </p>
+      )}
+
+      {analysis && (
+        <CampaignCopilot
+          analysis={analysis}
+        />
       )}
       <h3>Lines</h3>
 
