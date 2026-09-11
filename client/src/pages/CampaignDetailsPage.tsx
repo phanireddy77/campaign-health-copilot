@@ -23,6 +23,7 @@ import { fetchCampaignHealth  } from "../features/campaigns/campaignHealthSlice"
 import CampaignHealthSummary from "../components/CampaignHealthSummary";
 
 import CampaignLineHealthTable from "../components/CampaignLineHealthTable";
+
 import {
   analyzeCampaign,
   clearAnalysis,
@@ -30,6 +31,15 @@ import {
 
 import CampaignCopilot
   from "../components/CampaignCopilot";
+
+import CopilotLoading
+  from "../components/CopilotLoading";
+
+import CopilotError
+  from "../components/CopilotError";
+
+import CopilotMetadata
+  from "../components/CopilotMetadata";
 
 function CampaignDetailsPage() {
   const { campaignId } = useParams();
@@ -57,6 +67,9 @@ function CampaignDetailsPage() {
 
   const {
     result: analysis,
+    model: model,
+    generatedAt: generatedAt,
+    healthSnapshot: healthSnapshot,
     loading: analysisLoading,
     error: analysisError,
   } = useAppSelector(
@@ -64,6 +77,19 @@ function CampaignDetailsPage() {
           state.campaignAnalysis
       );
 
+  const handleAnalyze =
+    () => {
+      const id =
+        Number(campaignId);
+
+      if (
+        Number.isInteger(id)
+      ) {
+        dispatch(
+          analyzeCampaign(id)
+        );
+      }
+    };
   useEffect(() => {
     const id = Number(campaignId);
 
@@ -137,36 +163,51 @@ function CampaignDetailsPage() {
           disabled={
             analysisLoading
           }
-          onClick={() => {
-            const id =
-              Number(campaignId);
-
-            if (
-              Number.isInteger(id)
-            ) {
-              dispatch(
-                analyzeCampaign(id)
-              );
-            }
-          }}
+          onClick={ handleAnalyze }
         >
-          {analysisLoading
-            ? "Analyzing..."
-            : "Analyze with AI"}
+      {analysis
+        ? "Refresh AI Analysis"
+        : "Analyze with AI"}
         </button>
       </div>
-      {analysisError && (
-        <p>
-          AI analysis unavailable:
-          {" "}
-          {analysisError}
-        </p>
+
+      {analysisLoading && (
+        <CopilotLoading />
       )}
 
-      {analysis && (
-        <CampaignCopilot
-          analysis={analysis}
-        />
+      {analysisError &&
+        !analysisLoading && (
+          <CopilotError
+            message={
+              analysisError
+            }
+            onRetry={
+              handleAnalyze
+            }
+          />
+      )}
+
+      {analysis &&
+        !analysisLoading && (
+          <>
+            <CopilotMetadata
+              generatedAt={
+                generatedAt
+              }
+              model={
+                model
+              }
+              healthSnapshot={
+                healthSnapshot
+              }
+            />
+
+            <CampaignCopilot
+              analysis={
+                analysis
+              }
+            />
+          </>
       )}
       <h3>Lines</h3>
 

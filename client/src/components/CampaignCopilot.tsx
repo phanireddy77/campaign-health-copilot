@@ -1,3 +1,6 @@
+import CopilotSection
+  from "./CopilotSection";
+
 import type {
   CampaignAnalysis,
 } from "../types/analysis";
@@ -13,107 +16,149 @@ function CampaignCopilot({
   return (
     <section className="copilot">
 
-      <h3>
-        Campaign Health Copilot
-      </h3>
+      <div className="copilot-header">
+        <div>
+          <h3>
+            Campaign Health Copilot
+          </h3>
 
-      <div className="copilot-section">
-        <h4>
-          Executive Summary
-        </h4>
+          <p>
+            AI interpretation of the
+            current deterministic
+            campaign-health findings.
+          </p>
+        </div>
+      </div>
 
-        <p>
+      <CopilotSection
+        title="Executive Summary"
+      >
+        <p className="copilot-summary">
           {
             analysis
               .executiveSummary
           }
         </p>
-      </div>
+      </CopilotSection>
 
-      <div className="copilot-section">
-        <h4>
-          Primary Concerns
-        </h4>
-
+      <CopilotSection
+        title="Primary Concerns"
+        subtitle=
+          "Observed campaign-health evidence requiring attention."
+      >
         {analysis
           .primaryConcerns
-          .map(
-            (
-              concern,
-              index
-            ) => (
-              <article
-                key={index}
-              >
-                <strong>
-                  {concern.title}
-                </strong>
+          .length === 0 ? (
+            <p>
+              No major concerns identified.
+            </p>
+          ) : (
+            <div className="copilot-card-list">
 
-                <p>
-                  Severity:
-                  {" "}
-                  {
-                    concern
-                      .severity
-                  }
-                </p>
+              {analysis
+                .primaryConcerns
+                .map(
+                  (
+                    concern,
+                    index
+                  ) => (
+                    <article
+                      key={index}
+                      className="copilot-card"
+                    >
+                      <div className="copilot-card-heading">
 
-                <p>
-                  {
-                    concern
-                      .evidence
-                  }
-                </p>
-              </article>
-            )
+                        <strong>
+                          {concern.title}
+                        </strong>
+
+                        <span>
+                          {
+                            concern
+                              .severity
+                          }
+                        </span>
+
+                      </div>
+
+                      <p>
+                        {
+                          concern
+                            .evidence
+                        }
+                      </p>
+                    </article>
+                  )
+                )}
+
+            </div>
           )}
-      </div>
+      </CopilotSection>
 
-      <div className="copilot-section">
-        <h4>
-          Likely Causes
-        </h4>
-
+      <CopilotSection
+        title="Possible Causes"
+        subtitle=
+          "AI-generated hypotheses. These are not confirmed root causes."
+      >
         {analysis
           .likelyCauses
-          .map(
-            (
-              cause,
-              index
-            ) => (
-              <article
-                key={index}
-              >
-                <strong>
-                  {cause.cause}
-                </strong>
+          .length === 0 ? (
+            <p>
+              No specific causes could
+              be inferred from the
+              available evidence.
+            </p>
+          ) : (
+            <div className="copilot-card-list">
 
-                <p>
-                  Confidence:
-                  {" "}
-                  {
-                    cause
-                      .confidence
-                  }
-                </p>
+              {analysis
+                .likelyCauses
+                .map(
+                  (
+                    cause,
+                    index
+                  ) => (
+                    <article
+                      key={index}
+                      className="copilot-card"
+                    >
+                      <div className="copilot-card-heading">
 
-                <p>
-                  {
-                    cause
-                      .reasoning
-                  }
-                </p>
-              </article>
-            )
+                        <strong>
+                          {cause.cause}
+                        </strong>
+
+                        <span>
+                          Confidence:
+                          {" "}
+                          {
+                            cause
+                              .confidence
+                          }
+                        </span>
+
+                      </div>
+
+                      <p>
+                        {
+                          cause
+                            .reasoning
+                        }
+                      </p>
+                    </article>
+                  )
+                )}
+
+            </div>
           )}
-      </div>
+      </CopilotSection>
 
-      <div className="copilot-section">
-        <h4>
-          Recommended Checks
-        </h4>
-
-        <ul>
+      <CopilotSection
+        title="Recommended Checks"
+        subtitle=
+          "Validate these areas before taking corrective action."
+      >
+        <ol className="copilot-checklist">
           {analysis
             .recommendedChecks
             .map(
@@ -126,15 +171,15 @@ function CampaignCopilot({
                 </li>
               )
             )}
-        </ul>
-      </div>
+        </ol>
+      </CopilotSection>
 
-      <div className="copilot-section">
-        <h4>
-          Recommended Actions
-        </h4>
-
-        <ul>
+      <CopilotSection
+        title="Recommended Actions"
+        subtitle=
+          "Potential next steps based on the current evidence."
+      >
+        <ol className="copilot-checklist">
           {analysis
             .recommendedActions
             .map(
@@ -147,8 +192,8 @@ function CampaignCopilot({
                 </li>
               )
             )}
-        </ul>
-      </div>
+        </ol>
+      </CopilotSection>
 
     </section>
   );

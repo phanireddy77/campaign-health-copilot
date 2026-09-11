@@ -74,32 +74,54 @@ export async function getCampaignHealthAnalysis(req: Request, res: Response) {
         });
     }
     try {
-        const result = await analyzeCampaign(id);
-        if (!result) {
-            return res.status(404).json({
+            const result = await analyzeCampaign(id);
+            if (!result) {
+                return res.status(404).json({
+                    error: {
+                    code:
+                        "CAMPAIGN_NOT_FOUND",
+
+                    message:
+                        `Campaign ${id} was not found.`,
+                    },
+                });
+            }
+            return res.json({
+                data: result
+            });
+        } catch (error) {
+            console.error(
+                "Campaign analysis failed:",
+                error
+            );
+
+            if (
+                error instanceof Error &&
+                error.message.includes(
+                "OPENAI_API_KEY"
+                )
+            ) {
+                return res
+                .status(503)
+                .json({
+                    error: {
+                    code:
+                        "AI_NOT_CONFIGURED",
+
+                    message:
+                        "AI analysis is not configured.",
+                    },
+                });
+            }
+
+            res.status(502).json({
                 error: {
                 code:
-                    "CAMPAIGN_NOT_FOUND",
+                    "AI_ANALYSIS_FAILED",
 
                 message:
-                    `Campaign ${id} was not found.`,
+                    "Campaign AI analysis could not be completed. Please try again.",
                 },
             });
         }
-        return res.json({
-            data: result
-        });
-    } catch (error) {
-        console.error("Campaign analysis failed:", error);
-
-        res.status(502).json({
-        error: {
-            code:
-            "AI_ANALYSIS_FAILED",
-
-            message:
-            "Campaign AI analysis could not be completed.",
-        },
-        });
-    }
 }

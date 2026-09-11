@@ -1,16 +1,27 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { apiPost } from "../../api/apiClient";
 import type { CampaignAnalysis } from "../../types/analysis";
+import type { HealthStatus } from "../../types/lineHealth";
 
 interface CampaignAnalysisResponse {
     campaignId: number;
     model: string;
     analysis: CampaignAnalysis;
+    generatedAt: string;
+    healthSnapshot: {
+      score: number;
+      status: HealthStatus | null;
+    };
 }
 
 interface CampaignAnalysisState {
     model: string | '';
     result: CampaignAnalysis | null;
+    generatedAt: string | '';
+    healthSnapshot: {
+      score: number;
+      status: HealthStatus | null;
+    } | null;
     loading: boolean;
     error: string | '';
 }
@@ -19,6 +30,8 @@ const initialState: CampaignAnalysisState = {
     model: '',
     result: null,
     loading: false,
+    generatedAt: '',
+    healthSnapshot: null,
     error: ''
 };
 
@@ -46,6 +59,8 @@ export const analyzeCampaign =
                 state.result = null;
                 state.model = '';
                 state.error = '';
+                state.generatedAt = '';
+                state.healthSnapshot = null;
             },
         },
     extraReducers:
@@ -69,14 +84,13 @@ export const analyzeCampaign =
               state,
               action
             ) => {
-              state.loading =
-                false;
+              const { analysis, model, generatedAt, healthSnapshot } = action.payload;
 
-              state.result =
-                action.payload.analysis;
-
-              state.model =
-                action.payload.model;
+              state.loading = false;
+              state.result = analysis;
+              state.model = model;
+              state.generatedAt = generatedAt;
+              state.healthSnapshot = healthSnapshot;
             }
           )
 

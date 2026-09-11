@@ -4,6 +4,13 @@ interface APIResponse<T> {
     data: T
 };
 
+interface ApiErrorResponse {
+    error?: {
+        code?: string;
+        message?: string;
+    }
+};
+
 export async function apiGet<T>(path: string): Promise<T> {
     if (!path) {
         throw new Error("Invalid End point path");
@@ -12,7 +19,7 @@ export async function apiGet<T>(path: string): Promise<T> {
     const response = await fetch(`${APP_BASE_URL}${path}`);
 
     if (!response.ok) {
-        throw new Error(`API request failed. ${response.status}`);
+        return throwApiError(response);
     }
 
     const body = (await response.json() as APIResponse<T>);
@@ -32,10 +39,32 @@ export async function apiPost<T>(path: string, payload?: unknown): Promise<T> {
     });
 
     if (!response.ok) {
-        throw new Error(`API request failed. ${response.status}`);
+        return throwApiError(response);
     }
 
     const body = (await response.json() as APIResponse<T>);
 
     return body.data;
+}
+
+export async function throwApiError(response: Response): Promise<never> {
+  let message =
+    `API request failed: ${response.status}`;
+
+  try {
+    const body =
+      (await response.json()) as
+        ApiErrorResponse;
+
+    if (
+      body.error?.message
+    ) {
+      message =
+        body.error.message;
+    }
+  } catch {
+    // Fall back to HTTP status message.
+  }
+
+  throw new Error(message);
 }

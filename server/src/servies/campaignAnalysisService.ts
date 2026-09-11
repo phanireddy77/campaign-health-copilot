@@ -113,5 +113,12 @@ export async function analyzeCampaign(
       OPENAI_MODEL,
 
     analysis,
+
+    generatedAt: new Date().toISOString(),
+
+    healthSnapshot: {
+      score: health.score,
+      status: health.status
+    }
   };
 }
