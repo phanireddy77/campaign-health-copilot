@@ -1,19 +1,16 @@
 import { Request, Response } from "express";
+import { AppError } from "../errors/AppError";
 import { getCampaign, getLinesByCampaign } from "../servies/campaignService";
 import { getCampaignHealth } from "../servies/campaignHealthService";
 import { analyzeCampaign } from "../servies/campaignAnalysisService";
 
 export async function getCampaignDetails(req: Request, res: Response) {
     const id = Number(req.params.campaignId);
-
-    if (!Number.isInteger(id)) {
-        return res.status(400).json({
-            error: 'INVALID_CAMPAIGN_ID',
-            message: 'Invalid campaign id'
-        });
-    }
     const campaign = await getCampaign(id);
 
+    if (!campaign) {
+        throw new AppError(404, "CAMPAIGN_NOT_FOUND", `Campaign ${id} not found`);
+    }
     return res.json({
         data: campaign
     });
@@ -21,16 +18,11 @@ export async function getCampaignDetails(req: Request, res: Response) {
 
 export async function listLinesByCampaign(req: Request, res: Response) {
     const id = Number(req.params.campaignId);
-
-    if (!Number.isInteger(id)) {
-        return res.status(400).json({
-            error: 'INVALID_CAMPAIGN_ID',
-            message: 'Invalid campaign id'
-        });
-    }
-
     const response = await getLinesByCampaign(id);
 
+    if (!response) {
+        throw new AppError(404, "CAMPAIGN_NOT_FOUND", `Campaign ${id} not found`);
+    }
     return res.json({
         data: response
     });
@@ -38,25 +30,10 @@ export async function listLinesByCampaign(req: Request, res: Response) {
 
 export async function getCampaignHealthDetails(req: Request, res: Response) {
     const id = Number(req.params.campaignId);
-
-    if (!Number.isInteger(id)) {
-        return res.status(400).json({
-            error: 'INVALID_CAMPAIGN_ID',
-            message: 'Invalid campaign id'
-        });
-    }
     const response = await getCampaignHealth(id);
 
     if (!response) {
-        return res.status(404).json({
-        error: {
-            code:
-            "CAMPAIGN_NOT_FOUND",
-
-            message:
-            `Campaign ${id} was not found.`,
-        },
-        });
+        throw new AppError(404, "CAMPAIGN_NOT_FOUND", `Campaign ${id} not found`);
     }
     
     return res.json({
@@ -67,24 +44,10 @@ export async function getCampaignHealthDetails(req: Request, res: Response) {
 export async function getCampaignHealthAnalysis(req: Request, res: Response) {
     const id = Number(req.params.campaignId);
 
-    if (!Number.isInteger(id)) {
-        return res.status(400).json({
-            error: 'INVALID_CAMPAIGN_ID',
-            message: 'Invalid campaign id'
-        });
-    }
     try {
             const result = await analyzeCampaign(id);
             if (!result) {
-                return res.status(404).json({
-                    error: {
-                    code:
-                        "CAMPAIGN_NOT_FOUND",
-
-                    message:
-                        `Campaign ${id} was not found.`,
-                    },
-                });
+                throw new AppError(404, "CAMPAIGN_NOT_FOUND", `Campaign ${id} not found`);
             }
             return res.json({
                 data: result
@@ -101,27 +64,9 @@ export async function getCampaignHealthAnalysis(req: Request, res: Response) {
                 "OPENAI_API_KEY"
                 )
             ) {
-                return res
-                .status(503)
-                .json({
-                    error: {
-                    code:
-                        "AI_NOT_CONFIGURED",
-
-                    message:
-                        "AI analysis is not configured.",
-                    },
-                });
+                throw new AppError(503, "AI_NOT_CONFIGURED", "AI analysis is not configured.");
             }
 
-            res.status(502).json({
-                error: {
-                code:
-                    "AI_ANALYSIS_FAILED",
-
-                message:
-                    "Campaign AI analysis could not be completed. Please try again.",
-                },
-            });
+            throw new AppError(502, "AI_ANALYSIS_FAILED", "Campaign AI analysis could not be completed. Please try again.");
         }
 }

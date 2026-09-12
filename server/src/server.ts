@@ -1,8 +1,62 @@
-import "dotenv/config";
 import app from "./app";
 
-const PORT = process.env.PORT || 3001;
+import {
+  env,
+} from "./config/env";
 
-app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
-});
+import db from "./db/knex";
+
+const server =
+  app.listen(
+    env.PORT,
+    () => {
+      console.log(
+        `Campaign Health API running on port ${env.PORT}`
+      );
+    }
+  );
+
+async function shutdown(
+  signal: string
+) {
+  console.log(
+    `${signal} received. Shutting down gracefully.`
+  );
+
+  server.close(
+    async () => {
+      try {
+        await db.destroy();
+
+        console.log(
+          "Database connections closed."
+        );
+
+        process.exit(0);
+      } catch (error) {
+        console.error(
+          "Shutdown failed:",
+          error
+        );
+
+        process.exit(1);
+      }
+    }
+  );
+}
+
+process.on(
+  "SIGTERM",
+  () =>
+    void shutdown(
+      "SIGTERM"
+    )
+);
+
+process.on(
+  "SIGINT",
+  () =>
+    void shutdown(
+      "SIGINT"
+    )
+);

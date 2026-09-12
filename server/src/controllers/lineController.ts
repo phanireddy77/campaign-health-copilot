@@ -1,25 +1,14 @@
 import { Request, Response } from "express";
+import { AppError } from "../errors/AppError";
 import { getLineById, getLineMetrics } from "../servies/lineService";
 import { getLineHealth } from "../servies/lineHealthService";
 
 export async function getLine(req: Request, res: Response) {
     const id = Number(req.params.lineId);
-
-    if(!Number.isInteger(id)) {
-        return res.status(404).json({
-            error: 'INVALID_LINE_ID',
-            message: 'Invalid line id'
-        });
-    }
     const line = await getLineById(id);
 
     if (!line) {
-        return res.status(404).json({
-        error: {
-            code: "LINE_NOT_FOUND",
-            message: `Line ${id} was not found.`,
-        },
-        });
+        throw new AppError(404, "LINE_NOT_FOUND", `Line ${id} not found`);
     }
     return res.json({
         data: line
@@ -28,22 +17,10 @@ export async function getLine(req: Request, res: Response) {
 
 export async function getMetricsByLine(req: Request, res: Response) {
     const id = Number(req.params.lineId);
-
-    if(!Number.isInteger(id)) {
-        return res.status(404).json({
-            error: 'INVALID_LINE_ID',
-            message: 'Invalid line id'
-        });
-    }
     const response = await getLineMetrics(id);
 
     if (!response) {
-        return res.status(404).json({
-        error: {
-            code: "LINE_NOT_FOUND",
-            message: `Line ${id} was not found.`,
-        },
-        });
+        throw new AppError(404, "LINE_NOT_FOUND", `Line ${id} not found`);
     }
 
     return res.json({
@@ -53,22 +30,10 @@ export async function getMetricsByLine(req: Request, res: Response) {
 
 export async function getLineHealthById(req: Request, res: Response) {
     const id = Number(req.params.lineId);
-
-    if(!Number.isInteger(id)) {
-        res.status(404).json({
-            error: 'INVALID_LINE_ID',
-            message: 'Invalid line id'
-        });
-    }
     const response = await getLineHealth(id);
 
     if (!response) {
-        return res.status(404).json({
-        error: {
-            code: "LINE_NOT_FOUND",
-            message: `Line ${id} was not found.`,
-        },
-        });
+        throw new AppError(404, "LINE_NOT_FOUND", `Line ${id} not found`);
     }
     
     return res.json({

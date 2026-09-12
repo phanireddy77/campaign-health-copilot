@@ -1,4 +1,6 @@
 import { Request, Response } from "express";
+import { AppError } from "../errors/AppError";
+
 import { getAllAdvertiser, getAdvertiserById, getCampaignsByAdvertiser } from "../servies/advertiserService";
 
 export async function listAdvertisers(req: Request, res: Response) {
@@ -8,20 +10,10 @@ export async function listAdvertisers(req: Request, res: Response) {
 
 export async function getAdvertiser(req: Request, res: Response) {
    const advId = Number(req.params.advertiserId);
-
-    if (!Number.isInteger(advId)) {
-        return res.status(400).json({
-            error: 'INVALID_ADVERTISER_ID',
-            message: 'Invalid advertiser id'
-        });
-    }
-    const advertiser = await getAdvertiserById(Number(advId));
+   const advertiser = await getAdvertiserById(Number(advId));
 
     if (!advertiser) {
-        return res.status(404).json({
-            error: 'ADVERTISER_NOT_FOUND',
-            message: 'Advertiser not found'
-        });
+        throw new AppError(404, "ADVERTISER_NOT_FOUND", `Advertiser ${advId} not found`);
     }
     return res.json({
         data: advertiser
@@ -30,20 +22,10 @@ export async function getAdvertiser(req: Request, res: Response) {
 
 export async function listCampaignsByAdvertiser(req: Request, res: Response) {
    const advId = Number(req.params.advertiserId);
-
-    if (!Number.isInteger(advId)) {
-        return res.status(400).json({
-            error: 'INVALID_ADVERTISER_ID',
-            message: 'Invalid advertiser id'
-        });
-    }
-    const result = await getCampaignsByAdvertiser(Number(advId));
+   const result = await getCampaignsByAdvertiser(Number(advId));
 
     if (!result) {
-        return res.status(404).json({
-            error: 'ADVERTISER_NOT_FOUND',
-            message: 'Advertiser not found'
-        });
+        throw new AppError(404, "ADVERTISER_NOT_FOUND", `Advertiser ${advId} not found`);
     }
 
     return res.json({

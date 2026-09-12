@@ -1,6 +1,7 @@
 import OpenAI from "openai";
+import { env } from "./env";
 
-const apiKey = process.env.OPENAI_API_KEY;
+const apiKey = env.OPENAI_API_KEY;
 
 if (!apiKey) {
     console.warn("OPENAI_API_KEY is not configured.");
@@ -10,4 +11,4 @@ export const openai = new OpenAI({
     apiKey
 });
 
-export const OPENAI_MODEL = process.env.OPENAI_MODEL || 'openai-gpt5.6-terra';
+export const OPENAI_MODEL = env.OPENAI_MODEL;

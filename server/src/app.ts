@@ -1,14 +1,33 @@
 import express from "express";
 import cors from "cors";
+import helmet from "helmet";
 import db  from "./db/knex";
+import { env } from "./config/env";
 import advertiserRoutes from "./routes/advertiserRoutes";
 import campaignRoutes from "./routes/campaignRoutes";
 import lineRoutes from "./routes/lineRoutes";
+import { requestLogger } from "./middleware/requestLogger";
+import { notFoundHandler } from "./middleware/notFoundHandler";
+import { errorHandler } from "./middleware/errorHandler";
+import {
+  getHealth,
+} from "./controllers/healthController.js";
 
 const app = express();
+const allowedOrigins =
+  env.CORS_ORIGIN
+    .split(",")
+    .map(
+      (origin) =>
+        origin.trim()
+    )
+    .filter(Boolean);
 
-app.use(cors());
-app.use(express.json());
+app.use(helmet());
+app.use(cors({ origin: allowedOrigins }));
+app.use(express.json({ limit: "1mb" }));
+app.disable("x-powered-by");
+app.use( requestLogger);
 
 app.get("/api", (_req, res) => {
   res.json({
@@ -32,32 +51,12 @@ app.get("/api", (_req, res) => {
   });
 });
 
-app.get("/api/health", async (_req, res) => {
-  try {
-    await db.raw("SELECT 1");
-    const dt = new Date();
-    dt.setMilliseconds(0); // Remove milliseconds for consistency
-
-    res.json({
-      status: "healthy",
-      service: "campaign-health-api",
-      database: "connected",
-      timestamp: dt.toISOString().replace(".000Z", "Z")
-    });
-  } catch (error) {
-    console.error("Health check failed:", error);
-
-    res.status(503).json({
-      status: "unhealthy",
-      service: "campaign-health-api",
-      database: "disconnected",
-      timestamp: new Date().toISOString(),
-    });
-  }
-});
+app.get("/api/health",getHealth);
 
 app.use("/api/advertisers", advertiserRoutes);
 app.use("/api/campaigns", campaignRoutes);
 app.use("/api/lines", lineRoutes);
+app.use( notFoundHandler );
+app.use( errorHandler );
 
 export default app;
