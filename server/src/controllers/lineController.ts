@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { AppError } from "../errors/AppError";
-import { getLineById, getLineMetrics } from "../servies/lineService";
-import { getLineHealth } from "../servies/lineHealthService";
+import { getLineById, getLineMetrics } from "../services/lineService";
+import { getLineHealth } from "../services/lineHealthService";
 
 export async function getLine(req: Request, res: Response) {
     const id = Number(req.params.lineId);

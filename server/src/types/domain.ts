@@ -14,6 +14,8 @@ export interface Campaign {
   budget: string;
   start_date: string;
   end_date: string;
+  created_at: Date; // ISO 8601 format
+  updated_at: Date;
 }
 
 export interface Line {
@@ -27,6 +29,8 @@ export interface Line {
   goal_value: string | null;
   start_date: string;
   end_date: string;
+  created_at: Date; // ISO 8601 format
+  updated_at: Date;
 }
 
 export interface LineMetric {

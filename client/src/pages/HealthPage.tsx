@@ -6,38 +6,31 @@ interface CampaignHealthData {
   database: string;
   timestamp: string;
 }
+const APP_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001/api';
 
 function HealthCheck() {
  const [health, setHealth] = useState<CampaignHealthData | null>(null);
  const  [error, setError] = useState<string | null>(null);
 
  useEffect(()=> {
-  fetch('http://localhost:3001/api/health')
-  .then((res) => {
-    if (!res.ok) {
-      throw new Error(`Campaign Health API returned status ${res.status}`);
-    }
-    return res.json();
-  })
-  .then((data) => setHealth(data))
-  .catch((error) => {
-    setError(error.message);
-  })
- , []});
+   fetch(`${APP_BASE_URL}/health`)
+   .then((response) => response.json())
+   .then((data) => { setHealth(data) })
+   .catch((error) => setError(error.message));
+
+  }, []);
  return (
   <>
   <main>
     <h1>Campaign Health</h1>
     {error && <p style={{ color: 'red' }}>Error: {error}</p>}
-    {health ? (
+    {health && (
       <div>
         <p>Status: {health.status}</p>
         <p>Service: {health.service}</p>
         <p>Database: {health.database}</p>
         <p>Timestamp: {health.timestamp}</p>
       </div>
-    ) : (
-      !error && <p>Loading...</p>
     )}
   </main>
   </>

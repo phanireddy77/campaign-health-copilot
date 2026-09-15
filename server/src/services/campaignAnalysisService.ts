@@ -3,9 +3,9 @@ import {
   OPENAI_MODEL,
 } from "../config/openai.js";
 
-import { env } from "../config/env";
+import { env } from "../config/env.js";
 
-import { AppError } from "../errors/AppError";
+import { AppError } from "../errors/AppError.js";
 
 import {
   getCampaignHealth,

@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { AppError } from "../errors/AppError";
 
-import { getAllAdvertiser, getAdvertiserById, getCampaignsByAdvertiser } from "../servies/advertiserService";
+import { getAllAdvertiser, getAdvertiserById, getCampaignsByAdvertiser } from "../services/advertiserService";
 
 export async function listAdvertisers(req: Request, res: Response) {
     const advertisers = await getAllAdvertiser();

@@ -1,8 +1,8 @@
 import { Request, Response } from "express";
 import { AppError } from "../errors/AppError";
-import { getCampaign, getLinesByCampaign } from "../servies/campaignService";
-import { getCampaignHealth } from "../servies/campaignHealthService";
-import { analyzeCampaign } from "../servies/campaignAnalysisService";
+import { getCampaign, getLinesByCampaign } from "../services/campaignService";
+import { getCampaignHealth } from "../services/campaignHealthService";
+import { analyzeCampaign } from "../services/campaignAnalysisService";
 
 export async function getCampaignDetails(req: Request, res: Response) {
     const id = Number(req.params.campaignId);

@@ -4,7 +4,7 @@ interface HealthSummaryProps {
     health: LineHealthResult;
 }
 
-function LineHealthSummary({ health, }: HealthSummaryProps) {
+function LineHealthSummary({ health }: HealthSummaryProps) {
     return (
         <section>
             <div className="health-summary">

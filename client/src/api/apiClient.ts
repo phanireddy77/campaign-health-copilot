@@ -22,7 +22,6 @@ export async function apiGet<T>(path: string): Promise<T> {
     if (!response.ok) {
         return throwApiError(response);
     }
-
     const body = (await response.json() as APIResponse<T>);
 
     return body.data;

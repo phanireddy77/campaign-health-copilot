@@ -14,12 +14,7 @@ function dateOnlyToUtc(dt:string): Date {
 function inclusiveDaysBetween(start: string, end: string): number {
     const startDate = dateOnlyToUtc(start);
     const endDate = dateOnlyToUtc(end);
-
-    console.log(`start: ${start}: startDate: ${startDate}`);
-    console.log(`end: ${end}: endDate: ${endDate}`);
-
     const diffInMilli = endDate.getTime() - startDate.getTime();
-    console.log(`diffInMilli: ${diffInMilli}`);
 
     return (
         Math.floor(

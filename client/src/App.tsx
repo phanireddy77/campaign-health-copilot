@@ -4,6 +4,7 @@ import AdvertisersPage from "./pages/AdvertisersPage";
 import CampaignsPage from "./pages/CampaignsPage";
 import CampaignDetailsPage from "./pages/CampaignDetailsPage";
 import LineDetailsPage from "./pages/LineDetailsPage";
+import HealthCheck from "./pages/HealthPage";
 
 function App() {
   return (
@@ -13,6 +14,7 @@ function App() {
       <Route path="/advertisers/:advertiserId/campaigns" element={<CampaignsPage/>}></Route>
       <Route path="/campaigns/:campaignId" element={<CampaignDetailsPage/>}></Route>
       <Route path="/lines/:lineId" element={<LineDetailsPage/>}></Route>
+      <Route path="/health" element={<HealthCheck/>}></Route>
     </Routes>
   )
 }
