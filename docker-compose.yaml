@@ -1,19 +1,160 @@
 services:
+
   postgres:
-    image: postgres:17
-    container_name: campaign-health-postgres
-    restart: unless-stopped
+    image: postgres:17-alpine
+
+    container_name:
+      campaign-health-postgres
+
+    restart:
+      unless-stopped
 
     environment:
-      POSTGRES_DB: campaign_health
-      POSTGRES_USER: campaign_user
-      POSTGRES_PASSWORD: campaign_password
+      POSTGRES_DB:
+        campaign_health
+
+      POSTGRES_USER:
+        campaign_user
+
+      POSTGRES_PASSWORD:
+        campaign_password
 
     ports:
-      - "5432:5432"
+      - "5433:5432"
 
     volumes:
       - postgres_data:/var/lib/postgresql/data
+
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "pg_isready -U campaign_user -d campaign_health"
+        ]
+
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+
+  migrate:
+    build:
+      context: ./server
+
+    environment:
+      NODE_ENV:
+        PROD
+
+      DATABASE_HOST:
+        postgres
+
+      DATABASE_PORT:
+        5432
+
+      DATABASE_NAME:
+        campaign_health
+
+      DATABASE_USER:
+        campaign_user
+
+      DATABASE_PASSWORD:
+        campaign_password
+
+      CORS_ORIGIN:
+        http://localhost:5173
+
+    depends_on:
+      postgres:
+        condition:
+          service_healthy
+
+    command:
+      [
+        "npx",
+        "knex",
+        "--knexfile",
+        "knexfile.cjs",
+        "migrate:latest"
+      ]
+
+    restart:
+      "no"
+
+
+  api:
+    build:
+      context: ./server
+
+    container_name:
+      campaign-health-api
+
+    restart:
+      unless-stopped
+
+    environment:
+      NODE_ENV:
+        PROD
+
+      PORT:
+        3001
+
+      DATABASE_HOST:
+        postgres
+
+      DATABASE_PORT:
+        5432
+
+      DATABASE_NAME:
+        campaign_health
+
+      DATABASE_USER:
+        campaign_user
+
+      DATABASE_PASSWORD:
+        campaign_password
+
+      CORS_ORIGIN:
+        http://localhost:5173
+
+      OPENAI_API_KEY:
+        ${OPENAI_API_KEY:-}
+
+      OPENAI_MODEL:
+        ${OPENAI_MODEL:-gpt-5.6-terra}
+
+    ports:
+      - "3001:3001"
+
+    depends_on:
+      postgres:
+        condition:
+          service_healthy
+
+      migrate:
+        condition:
+          service_completed_successfully
+
+
+  web:
+    build:
+      context: ./client
+
+      args:
+        VITE_API_BASE_URL:
+          /api
+
+    container_name:
+      campaign-health-web
+
+    restart:
+      unless-stopped
+
+    ports:
+      - "5173:80"
+
+    depends_on:
+      - api
+
 
 volumes:
   postgres_data:

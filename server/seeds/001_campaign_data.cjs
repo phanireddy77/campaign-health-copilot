@@ -62,11 +62,12 @@ function generateMetrics(profile, dayIndex) {
 }
 
 exports.seed = async function (knex) {
-  // Delete child tables first because of foreign-key relationships.
-  await knex("line_metrics").del();
-  await knex("lines").del();
-  await knex("campaigns").del();
-  await knex("advertisers").del();
+  // TRUNCATE ... RESTART IDENTITY resets the id sequences (so seeded rows
+  // get deterministic ids every run) and CASCADE clears dependent tables
+  // without needing to delete them in FK order.
+  await knex.raw(
+    "TRUNCATE TABLE advertisers RESTART IDENTITY CASCADE"
+  );
 
   const advertisers = await knex("advertisers")
     .insert([

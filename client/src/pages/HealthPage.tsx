@@ -6,7 +6,7 @@ interface CampaignHealthData {
   database: string;
   timestamp: string;
 }
-const APP_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001/api';
+const APP_BASE_URL = import.meta.env.VITE_API_BASE_URL || '/api';
 
 function HealthCheck() {
  const [health, setHealth] = useState<CampaignHealthData | null>(null);
