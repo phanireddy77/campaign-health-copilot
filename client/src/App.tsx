@@ -5,16 +5,19 @@ import CampaignsPage from "./pages/CampaignsPage";
 import CampaignDetailsPage from "./pages/CampaignDetailsPage";
 import LineDetailsPage from "./pages/LineDetailsPage";
 import HealthCheck from "./pages/HealthPage";
+import NotFoundPage from "./pages/NotFoundPage";
 
 function App() {
   return (
     <Routes>
-      <Route element={<Layout />}></Route>
-      <Route path="/" element={<AdvertisersPage/>}></Route>
-      <Route path="/advertisers/:advertiserId/campaigns" element={<CampaignsPage/>}></Route>
-      <Route path="/campaigns/:campaignId" element={<CampaignDetailsPage/>}></Route>
-      <Route path="/lines/:lineId" element={<LineDetailsPage/>}></Route>
-      <Route path="/health" element={<HealthCheck/>}></Route>
+      <Route element={<Layout />}>
+        <Route path="/" element={<AdvertisersPage/>}></Route>
+        <Route path="/advertisers/:advertiserId/campaigns" element={<CampaignsPage/>}></Route>
+        <Route path="/campaigns/:campaignId" element={<CampaignDetailsPage/>}></Route>
+        <Route path="/lines/:lineId" element={<LineDetailsPage/>}></Route>
+        <Route path="/health" element={<HealthCheck/>}></Route>
+        <Route path="*" element={<NotFoundPage/>}></Route>
+      </Route>
     </Routes>
   )
 }

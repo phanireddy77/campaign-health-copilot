@@ -1,4 +1,5 @@
 import type { HealthIssue } from "../types/lineHealth";
+import StatusBadge from "./StatusBadge";
 
 interface HealthIssueProps {
     issues: HealthIssue[];
@@ -22,14 +23,18 @@ function LineHealthIssues({ issues }: HealthIssueProps) {
             {
                 issues.map(
                     (issue) => (
-                        <article key={issue.code} className="health-issue">
-                            <strong>{issue.code}</strong>
-                            <span style={{marginLeft:'10px'}}>{issue.severity}</span>
+                        <article key={issue.code} className={`health-issue health-issue-${issue.severity.toLowerCase()}`}>
+                            <div className="health-issue-header">
+                                <strong>{issue.code}</strong>
+                                <StatusBadge value={issue.severity} />
+                            </div>
                             <p>{issue.message}</p>
-                            {issue.actual && (
-                                <p>Actual Value: {issue.actual.toFixed(2)}. Threshold is {issue.threshold}</p>
-                            )}
-                            <p>Health penalty: {" "} - {issue.penalty} </p>
+                            <p className="health-issue-detail">
+                                {issue.actual && (
+                                    <span>Actual {issue.actual.toFixed(2)} · Threshold {issue.threshold}</span>
+                                )}
+                                <span>Health penalty −{issue.penalty}</span>
+                            </p>
                         </article>
                     )
                 )

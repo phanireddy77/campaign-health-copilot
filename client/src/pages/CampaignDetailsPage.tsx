@@ -41,6 +41,15 @@ import CopilotError
 import CopilotMetadata
   from "../components/CopilotMetadata";
 
+import StatusBadge
+  from "../components/StatusBadge";
+
+import {
+  formatCurrency,
+  formatFlight,
+  formatGoal,
+} from "../utils/formatters";
+
 function CampaignDetailsPage() {
   const { campaignId } = useParams();
 
@@ -102,49 +111,50 @@ function CampaignDetailsPage() {
   }, [campaignId, dispatch]);
 
   if (loading) {
-    return <p>Loading campaign...</p>;
+    return <p className="state-message">Loading campaign...</p>;
   }
 
   if (error) {
-    return <p>{error}</p>;
+    return <p className="state-message state-error" role="alert">{error}</p>;
   }
 
   if (!campaign) {
-    return <p>Campaign not found.</p>;
+    return <p className="state-message">Campaign not found.</p>;
   }
 
   return (
     <section>
-      <h2>{campaign.name}</h2>
+      <div className="page-header">
+        <div className="page-title-row">
+          <h2>{campaign.name}</h2>
+          <StatusBadge value={campaign.status} />
+        </div>
 
-      <p>
-        Status: {campaign.status}
-      </p>
+        <dl className="page-meta">
+          <div>
+            <dt>Budget</dt>
+            <dd>{formatCurrency(Number(campaign.budget))}</dd>
+          </div>
+          <div>
+            <dt>Flight</dt>
+            <dd>{formatFlight(campaign.start_date, campaign.end_date)}</dd>
+          </div>
+          <div>
+            <dt>Lines</dt>
+            <dd>{lines.length}</dd>
+          </div>
+        </dl>
+      </div>
 
-      <p>
-        Budget: $
-        {Number(
-          campaign.budget
-        ).toLocaleString()}
-      </p>
-
-      <p>
-        Flight:
-        {" "}
-        {campaign.start_date}
-        {" → "}
-        {campaign.end_date}
-      </p>
-
-      <h3> Campaign Health </h3>
+      <h3>Campaign Health</h3>
         {healthLoading && (
-          <p>
+          <p className="state-message">
             Evaluating campaign health...
           </p>
         )}
 
         {healthError && (
-          <p>
+          <p className="state-message state-error" role="alert">
             Campaign health unavailable:
             {" "}
             {healthError}
@@ -158,8 +168,15 @@ function CampaignDetailsPage() {
         </>
       )}
       <div className="copilot-actions">
+        <div>
+          <h3>AI Analysis</h3>
+          <p>
+            Ask the copilot to explain this campaign's health and suggest next steps.
+          </p>
+        </div>
         <button
           type="button"
+          className="button button-primary"
           disabled={
             analysisLoading
           }
@@ -211,34 +228,31 @@ function CampaignDetailsPage() {
       )}
       <h3>Lines</h3>
 
-      {lines.map((line) => (
-        <article key={line.id}>
-          <h4>
-            <Link
-              to={`/lines/${line.id}`}
-            >
-              {line.name}
-            </Link>
-          </h4>
+      <div className="card-grid">
+        {lines.map((line) => (
+          <Link
+            key={line.id}
+            to={`/lines/${line.id}`}
+            className="card card-link"
+          >
+            <span className="card-heading">
+              <span className="card-title">{line.name}</span>
+              <StatusBadge value={line.status} />
+            </span>
 
-          <p>
-            Status: {line.status}
-          </p>
-
-          <p>
-            Budget: $
-            {Number(
-              line.budget
-            ).toLocaleString()}
-          </p>
-
-          <p>
-            Goal: {line.goal_type}
-            {" "}
-            {line.goal_value}
-          </p>
-        </article>
-      ))}
+            <dl className="card-facts">
+              <div>
+                <dt>Budget</dt>
+                <dd>{formatCurrency(Number(line.budget))}</dd>
+              </div>
+              <div>
+                <dt>Goal</dt>
+                <dd>{formatGoal(line.goal_type, line.goal_value)}</dd>
+              </div>
+            </dl>
+          </Link>
+        ))}
+      </div>
     </section>
   );
 }

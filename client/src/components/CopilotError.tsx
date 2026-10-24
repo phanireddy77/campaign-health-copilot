@@ -20,6 +20,7 @@ function CopilotError({
 
       <button
         type="button"
+        className="button"
         onClick={onRetry}
       >
         Retry Analysis

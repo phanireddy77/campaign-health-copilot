@@ -4,6 +4,7 @@ import type {
 
 import {
   formatCurrency,
+  formatDate,
   formatNumber,
 } from "../utils/formatters";
 
@@ -33,7 +34,7 @@ function DailyMetricsTable({
             {metrics.map((metric) => (
               <tr key={metric.id}>
                 <td>
-                  {metric.metric_date}
+                  {formatDate(metric.metric_date)}
                 </td>
 
                 <td>

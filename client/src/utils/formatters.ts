@@ -42,3 +42,51 @@ export function formatRatio(
 
   return `${ratio.toFixed(2)}x`;
 }
+
+export function formatGoal(
+  goalType: string | null,
+  goalValue: string | null
+): string {
+  if (!goalType || goalValue === null) {
+    return "—";
+  }
+
+  const value = Number(goalValue);
+
+  if (goalType === "CPA") {
+    return `${formatCurrency(value)} CPA`;
+  }
+
+  if (goalType === "CTR") {
+    return `${formatPercent(value)} CTR`;
+  }
+
+  return `${goalType} ${value}`;
+}
+
+// Postgres DATE columns arrive as midnight-UTC ISO strings; format in UTC so
+// the calendar day never shifts with the viewer's timezone.
+export function formatDate(
+  value: string | null
+): string {
+  if (!value) {
+    return "—";
+  }
+
+  return new Date(value).toLocaleDateString(
+    "en-US",
+    {
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+      timeZone: "UTC",
+    }
+  );
+}
+
+export function formatFlight(
+  start: string,
+  end: string
+): string {
+  return `${formatDate(start)} – ${formatDate(end)}`;
+}

@@ -13,26 +13,32 @@ function AdvertisersPage() {
     },[dispatch]);
 
     if (loading) {
-        return <p> Loading...</p>;
+        return <p className="state-message">Loading advertisers...</p>;
     }
     if (error) {
-        return <p style={{color:'red'}}>{error}</p>
+        return <p className="state-message state-error" role="alert">{error}</p>
     }
     return (
         <section>
-           <h2>Advertisers</h2>
-            {items.map((advertiser) => (
-                <article key={advertiser.id}>
-                    <h3>
-                        <Link to={`/advertisers/${advertiser.id}/campaigns`}>
-                         {advertiser.name}
-                        </Link>
-                    </h3>
-                    <p>
-                        {advertiser.industry}
-                    </p>
-                </article>
-            ))}
+            <div className="page-header">
+                <h2>Advertisers</h2>
+                <p className="page-subtitle">
+                    Choose an advertiser to review the health of its campaigns.
+                </p>
+            </div>
+            <div className="card-grid">
+                {items.map((advertiser) => (
+                    <Link
+                        key={advertiser.id}
+                        to={`/advertisers/${advertiser.id}/campaigns`}
+                        className="card card-link"
+                    >
+                        <span className="card-title">{advertiser.name}</span>
+                        <span className="card-subtitle">{advertiser.industry}</span>
+                        <span className="card-cta">View campaigns →</span>
+                    </Link>
+                ))}
+            </div>
         </section>
     );
 }
