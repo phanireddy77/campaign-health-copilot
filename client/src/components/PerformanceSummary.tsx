@@ -31,6 +31,7 @@ function PerformanceSummary({
 
         <MetricCard
           label="Spend"
+          tone="blue"
           value={formatCurrency(
             summary.spend
           )}
@@ -38,6 +39,7 @@ function PerformanceSummary({
 
         <MetricCard
           label="Budget"
+          tone="blue"
           value={formatCurrency(
             summary.budget
           )}
@@ -45,6 +47,7 @@ function PerformanceSummary({
 
         <MetricCard
           label="Budget Utilization"
+          tone="blue"
           value={formatPercent(
             summary.budgetUtilization
           )}
@@ -52,6 +55,7 @@ function PerformanceSummary({
 
         <MetricCard
           label="Impressions"
+          tone="teal"
           value={formatNumber(
             summary.impressions
           )}
@@ -59,6 +63,7 @@ function PerformanceSummary({
 
         <MetricCard
           label="Clicks"
+          tone="teal"
           value={formatNumber(
             summary.clicks
           )}
@@ -66,6 +71,7 @@ function PerformanceSummary({
 
         <MetricCard
           label="CTR"
+          tone="teal"
           value={formatPercent(
             summary.ctr
           )}
@@ -73,6 +79,7 @@ function PerformanceSummary({
 
         <MetricCard
           label="Conversions"
+          tone="violet"
           value={formatNumber(
             summary.conversions
           )}
@@ -80,6 +87,7 @@ function PerformanceSummary({
 
         <MetricCard
           label="CPC"
+          tone="violet"
           value={formatCurrency(
             summary.cpc
           )}
@@ -87,6 +95,7 @@ function PerformanceSummary({
 
         <MetricCard
           label="CPA"
+          tone="violet"
           value={formatCurrency(
             summary.cpa
           )}
@@ -94,6 +103,7 @@ function PerformanceSummary({
 
         <MetricCard
           label="Revenue"
+          tone="green"
           value={formatCurrency(
             summary.revenue
           )}
@@ -101,6 +111,7 @@ function PerformanceSummary({
 
         <MetricCard
           label="ROAS"
+          tone="green"
           value={formatRatio(
             summary.roas
           )}
@@ -108,6 +119,7 @@ function PerformanceSummary({
 
         <MetricCard
           label="Expected Spend"
+          tone="amber"
           value={formatCurrency(
             summary.expectedSpend
           )}
@@ -115,6 +127,7 @@ function PerformanceSummary({
 
         <MetricCard
           label="Pacing"
+          tone="amber"
           value={formatRatio(
             summary.pacingRatio
           )}

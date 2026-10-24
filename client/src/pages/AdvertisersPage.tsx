@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { useEffect } from "react";
 import { fetchAdvertisers } from "../features/advertisers/advertiserSlice";
 import { useAppDispatch, useAppSelector } from "../app/hooks";
+import { initials, toneFor } from "../utils/tones";
 
 function AdvertisersPage() {
     const dispatch = useAppDispatch();
@@ -31,8 +32,11 @@ function AdvertisersPage() {
                     <Link
                         key={advertiser.id}
                         to={`/advertisers/${advertiser.id}/campaigns`}
-                        className="card card-link"
+                        className={`card card-link advertiser-card tint-${toneFor(advertiser.id)}`}
                     >
+                        <span className="avatar" aria-hidden="true">
+                            {initials(advertiser.name)}
+                        </span>
                         <span className="card-title">{advertiser.name}</span>
                         <span className="card-subtitle">{advertiser.industry}</span>
                         <span className="card-cta">View campaigns →</span>

@@ -1,6 +1,8 @@
 import type { CampaignHealthResult } from "../types/campaignHealth";
-import { formatCurrency, formatPercent } from "../utils/formatters";
+import { formatCurrency } from "../utils/formatters";
 import StatusBadge from "./StatusBadge";
+import ScoreRing from "./ScoreRing";
+import ExposureBar from "./ExposureBar";
 
 interface Props {
     health: CampaignHealthResult;
@@ -10,72 +12,39 @@ function CampaignHealthSummary({ health, }: Props) {
     return (
         <section>
             <div className="health-summary">
-                <div>
-                    <span className="metric-label">
-                        Health Score
-                    </span>
-
-                    <strong className="health-score">
-                        {health.score}
-                        <small>
-                        {" "}
-                        / 100
-                        </small>
-                    </strong>
+                <div className="health-card health-card-score">
+                    <ScoreRing score={health.score} status={health.status} />
+                    <div>
+                        <span className="metric-label">
+                            Health Score
+                        </span>
+                        <StatusBadge value={health.status} />
+                    </div>
                 </div>
 
-                <div>
-                    <span className="metric-label">
-                        Status
-                    </span>
-
-                    <StatusBadge value={health.status} />
-                </div>
-
-                <div>
+                <div className="health-card">
                     <span className="metric-label">
                         Total Spend
                     </span>
-                    <strong>
+                    <strong className="health-figure">
                         {formatCurrency(
                         health.totalSpend
                         )}
                     </strong>
-                </div>
-                <div>
-                    <span className="metric-label">
-                        Critical Exposure
+                    <span className="health-note">
+                        Across {health.lines.length} lines
                     </span>
-
-                    <strong>
-                        {formatPercent(
-                        health.criticalExposure
-                        )}
-                    </strong>
                 </div>
 
-                <div>
+                <div className="health-card health-card-wide">
                     <span className="metric-label">
-                        Warning Exposure
+                        Spend Exposure by Line Health
                     </span>
-
-                    <strong>
-                        {formatPercent(
-                        health.warningExposure
-                        )}
-                    </strong>
-                </div>
-
-                <div>
-                    <span className="metric-label">
-                        Healthy Exposure
-                    </span>
-
-                    <strong>
-                        {formatPercent(
-                        health.healthyExposure
-                        )}
-                    </strong>
+                    <ExposureBar
+                        critical={health.criticalExposure}
+                        warning={health.warningExposure}
+                        healthy={health.healthyExposure}
+                    />
                 </div>
             </div>
         </section>

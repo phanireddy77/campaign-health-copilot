@@ -1,11 +1,14 @@
+import type { Tone } from "../utils/tones";
+
 interface MetricCardProps {
     label: string;
     value: string;
     secondary?: string;
+    tone?: Tone;
 }
-function MetricCard({ label, value, secondary }: MetricCardProps) {
+function MetricCard({ label, value, secondary, tone = "blue" }: MetricCardProps) {
     return (
-        <article className="metric-card">
+        <article className={`metric-card tint-${tone}`}>
             <span className="metric-label">
                 {label}
             </span>

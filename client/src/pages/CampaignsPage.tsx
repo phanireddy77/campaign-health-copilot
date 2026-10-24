@@ -4,6 +4,7 @@ import { useAppDispatch, useAppSelector } from "../app/hooks";
 import { fetchCampaignsByAdvertiser } from "../features/campaigns/campaignSlice";
 import StatusBadge from "../components/StatusBadge";
 import { formatCurrency, formatFlight } from "../utils/formatters";
+import { toneFor } from "../utils/tones";
 
 function CampaignsPage() {
     const { advertiserId } = useParams();
@@ -42,7 +43,7 @@ function CampaignsPage() {
                     <Link
                         key={campaign.id}
                         to={`/campaigns/${campaign.id}`}
-                        className="card card-link"
+                        className={`card card-link card-accent tint-${toneFor(campaign.id)}`}
                     >
                         <span className="card-heading">
                             <span className="card-title">{campaign.name}</span>

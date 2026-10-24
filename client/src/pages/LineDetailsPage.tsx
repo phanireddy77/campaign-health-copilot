@@ -4,6 +4,7 @@ import { useAppDispatch, useAppSelector } from "../app/hooks";
 import { fetchLineById } from "../features/lines/lineSlice";
 import { fetchLineMetrics } from "../features/lines/metricsSlice";
 import { fetchLineHealth } from "../features/lines/lineHealthSlice";
+import { fetchCampaignById } from "../features/campaigns/campaignSlice";
 import PerformanceSummary
   from "../components/PerformanceSummary";
 import DailyMetricsTable
@@ -17,6 +18,7 @@ function LineDetailsPage (){
 
     const { lineId } = useParams();
     const line = useAppSelector((state)=> state.lines.selected);
+    const campaignId = useAppSelector((state) => state.campaigns.selected?.id);
     const {
         summary,
         daily,
@@ -36,6 +38,13 @@ function LineDetailsPage (){
         dispatch(fetchLineMetrics(id));
         dispatch(fetchLineHealth(id));
     },[lineId, dispatch]);
+
+    // The parent campaign backs the breadcrumb and back link on deep links.
+    useEffect(() => {
+        if (line && campaignId !== line.campaign_id) {
+            dispatch(fetchCampaignById(line.campaign_id));
+        }
+    }, [line, campaignId, dispatch]);
 
     if (loading) {
         return (

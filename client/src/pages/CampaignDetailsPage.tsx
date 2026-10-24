@@ -50,6 +50,10 @@ import {
   formatGoal,
 } from "../utils/formatters";
 
+import {
+  goalTone,
+} from "../utils/tones";
+
 function CampaignDetailsPage() {
   const { campaignId } = useParams();
 
@@ -168,7 +172,12 @@ function CampaignDetailsPage() {
         </>
       )}
       <div className="copilot-actions">
-        <div>
+        <span className="copilot-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24">
+            <path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9L12 3zM19 15l.9 2.1L22 18l-2.1.9L19 21l-.9-2.1L16 18l2.1-.9L19 15z" />
+          </svg>
+        </span>
+        <div className="copilot-actions-text">
           <h3>AI Analysis</h3>
           <p>
             Ask the copilot to explain this campaign's health and suggest next steps.
@@ -176,7 +185,7 @@ function CampaignDetailsPage() {
         </div>
         <button
           type="button"
-          className="button button-primary"
+          className="button button-ai"
           disabled={
             analysisLoading
           }
@@ -233,7 +242,7 @@ function CampaignDetailsPage() {
           <Link
             key={line.id}
             to={`/lines/${line.id}`}
-            className="card card-link"
+            className={`card card-link card-accent tint-${goalTone(line.goal_type)}`}
           >
             <span className="card-heading">
               <span className="card-title">{line.name}</span>
