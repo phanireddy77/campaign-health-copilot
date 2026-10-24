@@ -58,7 +58,12 @@ function CampaignLineHealthTable({
                 </td>
 
                 <td>
-                  {line.score}
+                  <span className={`score-cell score-${line.status.toLowerCase()}`}>
+                    <span className="score-track" aria-hidden="true">
+                      <span style={{ width: `${line.score}%` }} />
+                    </span>
+                    {line.score}
+                  </span>
                 </td>
 
                 <td>

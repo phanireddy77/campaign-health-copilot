@@ -31,7 +31,7 @@ function LineHealthIssues({ issues }: HealthIssueProps) {
                             <p>{issue.message}</p>
                             <p className="health-issue-detail">
                                 {issue.actual && (
-                                    <span>Actual {issue.actual.toFixed(2)} · Threshold {issue.threshold}</span>
+                                    <span>Actual {issue.actual.toFixed(issue.actual < 1 ? 4 : 2)} · Threshold {issue.threshold}</span>
                                 )}
                                 <span>Health penalty −{issue.penalty}</span>
                             </p>
