@@ -6,6 +6,7 @@ import type {
 
 import {
   formatCurrency,
+  formatDate,
   formatNumber,
   formatPercent,
   formatRatio,
@@ -20,10 +21,10 @@ function PerformanceSummary({
 }: PerformanceSummaryProps) {
   return (
     <section>
-      <p>
+      <p className="muted">
         Reporting through:
         {" "}
-        {summary.asOfDate ?? "No data"}
+        {summary.asOfDate ? formatDate(summary.asOfDate) : "No data"}
       </p>
 
       <div className="metrics-grid">

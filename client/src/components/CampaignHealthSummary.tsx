@@ -1,5 +1,6 @@
 import type { CampaignHealthResult } from "../types/campaignHealth";
 import { formatCurrency, formatPercent } from "../utils/formatters";
+import StatusBadge from "./StatusBadge";
 
 interface Props {
     health: CampaignHealthResult;
@@ -28,9 +29,7 @@ function CampaignHealthSummary({ health, }: Props) {
                         Status
                     </span>
 
-                    <strong>
-                        {health.status}
-                    </strong>
+                    <StatusBadge value={health.status} />
                 </div>
 
                 <div>

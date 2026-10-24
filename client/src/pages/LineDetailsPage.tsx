@@ -10,6 +10,8 @@ import DailyMetricsTable
   from "../components/DailyMetricsTable";
 import LineHealthIssues from "../components/LineHealthIssues";
 import LineHealthSummary from "../components/LineHealthSummary";
+import StatusBadge from "../components/StatusBadge";
+import { formatCurrency, formatFlight, formatGoal } from "../utils/formatters";
 
 function LineDetailsPage (){
 
@@ -37,7 +39,7 @@ function LineDetailsPage (){
 
     if (loading) {
         return (
-        <p>
+        <p className="state-message">
             Loading performance...
         </p>
         );
@@ -45,7 +47,7 @@ function LineDetailsPage (){
 
     if (error) {
         return (
-        <p>
+        <p className="state-message state-error" role="alert">
             Failed to load metrics:
             {" "}
             {error}
@@ -54,41 +56,36 @@ function LineDetailsPage (){
     }
 
     if(!line) {
-        return <p>Line is loading...</p>
+        return <p className="state-message">Line is loading...</p>
     }
     return (
         <section>
-            <h2>
-                {line.name}
-            </h2>
-            <p>
-                Status: {line.status}
-            </p>
-            <p>
-                Budget: $
-                {Number(
-                line.budget
-                ).toLocaleString()}
-            </p>
-            <p>
-                Daily Budget: $
-                {Number(
-                line.daily_budget || 0
-                ).toLocaleString()}
-            </p>
-            <p>
-                Goal Type: {line.goal_type}
-            </p>
-            <p>
-                Goal Value: {line.goal_value}
-            </p>
-            <p>
-                Flight:
-                {" "}
-                {line.start_date}
-                {" → "}
-                {line.end_date}
-            </p>
+            <div className="page-header">
+                <div className="page-title-row">
+                    <h2>
+                        {line.name}
+                    </h2>
+                    <StatusBadge value={line.status} />
+                </div>
+                <dl className="page-meta">
+                    <div>
+                        <dt>Budget</dt>
+                        <dd>{formatCurrency(Number(line.budget))}</dd>
+                    </div>
+                    <div>
+                        <dt>Daily budget</dt>
+                        <dd>{formatCurrency(Number(line.daily_budget || 0))}</dd>
+                    </div>
+                    <div>
+                        <dt>Goal</dt>
+                        <dd>{formatGoal(line.goal_type, line.goal_value)}</dd>
+                    </div>
+                    <div>
+                        <dt>Flight</dt>
+                        <dd>{formatFlight(line.start_date, line.end_date)}</dd>
+                    </div>
+                </dl>
+            </div>
             <h3>Line Health</h3>
             {lineHealthResult && (
                 <LineHealthSummary health={lineHealthResult} />

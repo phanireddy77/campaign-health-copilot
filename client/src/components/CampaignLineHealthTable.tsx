@@ -11,6 +11,9 @@ import {
   formatPercent,
 } from "../utils/formatters";
 
+import StatusBadge
+  from "./StatusBadge";
+
 interface Props {
   lines: CampaignLineHealth[];
 }
@@ -51,7 +54,7 @@ function CampaignLineHealthTable({
                 </td>
 
                 <td>
-                  {line.status}
+                  <StatusBadge value={line.status} />
                 </td>
 
                 <td>
@@ -77,9 +80,17 @@ function CampaignLineHealthTable({
                 </td>
 
                 <td>
-                  {line.issues.length > 0
-                    ? line.issues.join(", ")
-                    : "None"}
+                  {line.issues.length > 0 ? (
+                    <span className="issue-tags">
+                      {line.issues.map((issue) => (
+                        <code key={issue} className="issue-tag">
+                          {issue}
+                        </code>
+                      ))}
+                    </span>
+                  ) : (
+                    <span className="muted">None</span>
+                  )}
                 </td>
 
               </tr>

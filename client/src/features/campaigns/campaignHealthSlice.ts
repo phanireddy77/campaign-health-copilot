@@ -47,7 +47,7 @@ const campaignHealthSlice = createSlice({
             (state, action) => {
                 state.result = action.payload.health;
                 state.error = '';
-                state.loading = true;
+                state.loading = false;
             }
         )
         .addCase(

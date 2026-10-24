@@ -1,4 +1,5 @@
 import type { LineHealthResult } from "../types/lineHealth";
+import StatusBadge from "./StatusBadge";
 
 interface HealthSummaryProps {
     health: LineHealthResult;
@@ -10,16 +11,18 @@ function LineHealthSummary({ health }: HealthSummaryProps) {
             <div className="health-summary">
                 <div>
                     <span className="metric-label">Health Score</span>
-                    <strong className="health-score">{health.score}</strong>
-                    <small> / 100</small>
+                    <strong className="health-score">
+                        <span>{health.score}</span>
+                        <small> / 100</small>
+                    </strong>
                 </div>
                 <div>
                     <span className="metric-label">Status</span>
-                    <strong>{health.status}</strong>
+                    <StatusBadge value={health.status} />
                 </div>
                 <div>
                     <span className="metric-label">Issues</span>
-                    <strong>{health.issues.length}</strong>
+                    <strong className="health-score">{health.issues.length}</strong>
                 </div>
             </div>
         </section>

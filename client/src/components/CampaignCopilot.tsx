@@ -5,6 +5,9 @@ import type {
   CampaignAnalysis,
 } from "../types/analysis";
 
+import StatusBadge
+  from "./StatusBadge";
+
 interface Props {
   analysis:
     CampaignAnalysis;
@@ -72,12 +75,12 @@ function CampaignCopilot({
                           {concern.title}
                         </strong>
 
-                        <span>
-                          {
+                        <StatusBadge
+                          value={
                             concern
                               .severity
                           }
-                        </span>
+                        />
 
                       </div>
 
@@ -128,7 +131,7 @@ function CampaignCopilot({
                           {cause.cause}
                         </strong>
 
-                        <span>
+                        <span className="muted">
                           Confidence:
                           {" "}
                           {

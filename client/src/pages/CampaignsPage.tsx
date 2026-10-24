@@ -2,6 +2,8 @@ import { useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../app/hooks";
 import { fetchCampaignsByAdvertiser } from "../features/campaigns/campaignSlice";
+import StatusBadge from "../components/StatusBadge";
+import { formatCurrency, formatFlight } from "../utils/formatters";
 
 function CampaignsPage() {
     const { advertiserId } = useParams();
@@ -17,47 +19,49 @@ function CampaignsPage() {
         }
     },[advertiserId,dispatch]);
     if (loading) {
-        return <p>Loading...</p>;
+        return <p className="state-message">Loading campaigns...</p>;
     }
     if (error) {
-        return <p style={{color:'red'}}>{error}</p>
+        return <p className="state-message state-error" role="alert">{error}</p>
     }
     return (
         <section>
-            <Link to="/">
-                ← Advertisers
-            </Link>
-            <h2>
-                {advertiser?.name}
-            </h2>
+            <div className="page-header">
+                <h2>
+                    {advertiser?.name}
+                </h2>
+                <p className="page-subtitle">
+                    {advertiser?.industry}
+                    {advertiser?.industry && " · "}
+                    {items.length} {items.length === 1 ? "campaign" : "campaigns"}
+                </p>
+            </div>
 
-            <h3>Campaigns</h3>
-            {items.map((campaign) => (
-                <article key={campaign.id}>
-                    <h4>
-                        <Link
+            <div className="card-grid">
+                {items.map((campaign) => (
+                    <Link
+                        key={campaign.id}
                         to={`/campaigns/${campaign.id}`}
-                        >
-                        {campaign.name}
-                        </Link>
-                    </h4>
-                    <p>
-                        Status: {campaign.status}
-                    </p>
-                    <p>
-                        Budget: $
-                        {Number(
-                        campaign.budget
-                        ).toLocaleString()}
-                    </p>
-                    <p>
-                        {campaign.start_date}
-                        {" → "}
-                        {campaign.end_date}
-                    </p>
-                </article>
-            ))
-            }
+                        className="card card-link"
+                    >
+                        <span className="card-heading">
+                            <span className="card-title">{campaign.name}</span>
+                            <StatusBadge value={campaign.status} />
+                        </span>
+                        <dl className="card-facts">
+                            <div>
+                                <dt>Budget</dt>
+                                <dd>{formatCurrency(Number(campaign.budget))}</dd>
+                            </div>
+                            <div>
+                                <dt>Flight</dt>
+                                <dd>{formatFlight(campaign.start_date, campaign.end_date)}</dd>
+                            </div>
+                        </dl>
+                    </Link>
+                ))
+                }
+            </div>
         </section>
     )
 }
