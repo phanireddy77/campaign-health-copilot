@@ -47,9 +47,11 @@ npm run dev                 # Vite, port 5173
 
 ## Common commands
 
+There is no root `package.json`; run these from `server/` or `client/`.
+
 | Command | Description |
 |---|---|
-| `npm run dev` | Start with hot-reload (both client and server) |
+| `npm run dev` | Start with hot-reload (client or server) |
 | `npm run build` | TypeScript compile + Vite/tsc build |
 | `npm run lint` | ESLint (client only) |
 | `npm test` | Run all tests once (Vitest) |
@@ -81,6 +83,8 @@ cd client && npx vitest run test/components/LineHealthSummary.test.tsx
 
 `advertisers` → `campaigns` → `lines` → `line_metrics` (one row per line per day). Health is computed on-the-fly from `line_metrics`; there are no pre-stored health scores.
 
+Postgres `numeric` columns (`budget`, `daily_budget`, `goal_value`, `spend`, `revenue`) come back from `pg` as **strings** and are typed that way in `types/domain.ts`; services convert them with `Number(...)` before doing math.
+
 ### Server layers
 
 ```
@@ -106,7 +110,9 @@ routes → controllers → services → repositories → Knex (Postgres)
 
 ### Client state
 
-Redux Toolkit slices mirror the API resource hierarchy: `advertisers`, `campaigns`, `lines`, `metrics`, `lineHealth`, `campaignHealth`, `campaignAnalysis`. All API calls go through `src/api/apiClient.ts` (`apiGet`/`apiPost`), which reads `VITE_API_BASE_URL` and unwraps the `{ data }` envelope.
+Redux Toolkit slices (in `src/features/`) mirror the API resource hierarchy: `advertisers`, `campaigns`, `lines`, `metrics`, `lineHealth`, `campaignHealth`, `campaignAnalysis`. All API calls go through `src/api/apiClient.ts` (`apiGet`/`apiPost`), which reads `VITE_API_BASE_URL` and unwraps the `{ data }` envelope.
+
+Routing (`react-router-dom`, `src/App.tsx`) follows the same hierarchy under a shared `Layout`: `/` (advertisers) → `/advertisers/:advertiserId/campaigns` → `/campaigns/:campaignId` → `/lines/:lineId`, plus `/health`.
 
 ### AI analysis flow
 
@@ -122,10 +128,10 @@ The prompt is in `src/ai/campaignAnalysisPrompt.ts` and the output schema in `sr
 |---|---|---|
 | `NODE_ENV` | `DEVELOPMENT` | `DEVELOPMENT` / `STAGE` / `PROD` |
 | `PORT` | `3001` | |
-| `DATABASE_HOST` | `localhost` | |
-| `DATABASE_PORT` | `5432` | Docker: 5432 internal; local dev: 5433 |
-| `DATABASE_NAME` | `campaign_health` | |
-| `DATABASE_USER` | `campaign_user` | |
+| `DATABASE_HOST` | _(required)_ | `.env.example`: `localhost` |
+| `DATABASE_PORT` | `5432` | Docker: 5432 internal; local dev: 5433 (as in `.env.example`) |
+| `DATABASE_NAME` | _(required)_ | `.env.example`: `campaign_health` |
+| `DATABASE_USER` | _(required)_ | `.env.example`: `campaign_user` |
 | `DATABASE_PASSWORD` | _(required)_ | |
 | `CORS_ORIGIN` | `http://localhost:5173` | Comma-separated list allowed |
 | `OPENAI_API_KEY` | _(required)_ | Required at startup: `env.ts` exits and `config/openai.ts` throws if it is empty, so the 503 `AI_NOT_CONFIGURED` path in the service can't be reached today |
@@ -143,8 +149,16 @@ The prompt is in `src/ai/campaignAnalysisPrompt.ts` and the output schema in `sr
 OPENAI_API_KEY=sk-... docker compose up --build
 ```
 
-Services: Postgres on 5433, API on 3001, web (nginx) on 5173. The `migrate` service runs automatically before `api` starts.
+Services: Postgres on 5433, API on 3001, web (nginx) on 5173. The `migrate` service runs automatically before `api` starts, but Compose does **not** seed. To load demo data:
+
+```bash
+docker compose exec api npx knex --knexfile knexfile.cjs seed:run
+```
+
+The web image is built with `VITE_API_BASE_URL=/api`, and `client/nginx.conf` proxies `/api/` to `api:3001` and falls back to `index.html` for SPA routes. If you leave `OPENAI_API_KEY` unset, the `api` container exits at startup.
 
 ## Deployment
 
 The CI pipeline is defined in `Jenkinsfile`: server `npm ci` → typecheck → test → build, then client `npm ci` → lint → test → build, then Docker build and push of the **API image only** to ECR at `692901933475.dkr.ecr.us-east-1.amazonaws.com/campaign-health-api`, tagged `${BUILD_NUMBER}-${GIT_SHA}` and `latest`. The web image is not published.
+
+For server tests, CI starts a throwaway `postgres:17-alpine` container on port 55432, migrates and seeds it, and sets `OPENAI_API_KEY=ci-placeholder-key`, because tests never call OpenAI. If you add tests that need new env vars or seed rows, update the `Backend Test` stage too.
